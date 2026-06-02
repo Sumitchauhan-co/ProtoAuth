@@ -6,7 +6,7 @@
     "type": "module",
     "scripts": {
         "start": "node dist/app/index.js",
-        "build": "npx tsc -p .",
+        "build": "tsc",
         "dev": "tsc-watch --onSuccess \"node dist/index\"",
         "studio": "drizzle-kit studio",
         "db:generate": "drizzle-kit generate",
