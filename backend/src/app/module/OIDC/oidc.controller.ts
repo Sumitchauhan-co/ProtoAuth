@@ -1,17 +1,25 @@
-import type { Request, Response } from 'express';
+import type { CookieOptions, Request, Response } from 'express';
 import jose from 'node-jose';
 import { PUBLIC_KEY } from './utils/cert.js';
 import apiResponse from '../../common/utils/apiResponse.js';
 import apiError from '../../common/utils/apiError.js';
 import {
     signinService,
+    signoutService,
     signupService,
     tokenService,
     userInfoService,
 } from './oidc.service.js';
 
+const cookieOptions: CookieOptions = {
+    httpOnly: true,
+    secure: process.env.NODE_ENV === 'production',
+    sameSite: 'strict',
+};
+
 const serviceDiscovery = (req: Request, res: Response) => {
-    const ISSUER = `http://localhost:${process.env.PORT}`;
+    const ISSUER =
+        process.env.BACKEND_URL || `http://localhost:${process.env.PORT}`;
     return res.json({
         issuer: ISSUER,
         authorization_endpoint: `${ISSUER}/o/authenticate`,
@@ -59,7 +67,7 @@ const signin = async (req: Request, res: Response) => {
 };
 
 const signup = async (req: Request, res: Response) => {
-    const { client_id, redirect_uri, state } = req.body
+    const { client_id, redirect_uri, state } = req.body;
 
     if (!client_id || !redirect_uri) {
         throw apiError.badRequest('Invalid or missing OIDC parameters');
@@ -80,6 +88,35 @@ const signup = async (req: Request, res: Response) => {
     );
 };
 
+const signout = async (req: Request, res: Response) => {
+    const id_token = req.query.id_token;
+    const redirect_uri = req.query.redirect_uri;
+
+    if (!redirect_uri) {
+        throw apiError.badRequest('Missing redirect_uri');
+    }
+
+    if (typeof redirect_uri !== 'string') {
+        throw apiError.badRequest('Invalid redirect_uri format');
+    }
+
+    if (!id_token) {
+        throw apiError.badRequest('Missing id_token');
+    }
+
+    if (typeof id_token !== 'string') {
+        throw apiError.badRequest('Invalid id_token format');
+    }
+
+    await signoutService(id_token);
+
+    res.clearCookie('refreshToken', cookieOptions);
+
+    res.clearCookie('idToken', cookieOptions);
+
+    return res.redirect(redirect_uri);
+};
+
 const token = async (req: Request, res: Response) => {
     const result = await tokenService(req.body);
 
@@ -87,7 +124,10 @@ const token = async (req: Request, res: Response) => {
         throw apiError.notFound('token details missing');
     }
 
-    console.log(result);
+    if (result?.refresh_token) {
+        res.cookie('refreshToken', result.refresh_token, cookieOptions);
+        res.cookie('idToken', result.id_token, cookieOptions);
+    }
 
     return apiResponse.ok(res, 'Successfully created token', result);
 };
@@ -114,6 +154,7 @@ export default {
     authenticate,
     signin,
     signup,
+    signout,
     token,
     userInfo,
 };

@@ -174,6 +174,23 @@ export const signupService = async (
     return redirect;
 };
 
+export const signoutService = async (id_token: string) => {
+    const decoded = jwt.verify(id_token, PUBLIC_KEY, {
+        algorithms: ['RS256'],
+    }) as { sub: string };
+
+    const userId = decoded.sub;
+
+    if (!userId) {
+        throw apiError.notFound('User not found');
+    }
+
+    await db
+        .update(usersTable)
+        .set({ refreshToken: null })
+        .where(eq(usersTable.id, userId));
+};
+
 export const tokenService = async ({
     code,
     client_id,
@@ -186,12 +203,16 @@ export const tokenService = async ({
         throw apiError.badRequest('Missing grant_type');
     }
 
+    // Dynamic Production Issuer Domain URL
+    const ISSUER =
+        process.env.BACKEND_URL || `http://localhost:${process.env.PORT}`;
+    const now = Math.floor(Date.now() / 1000);
+
     if (grant_type === 'authorization_code') {
         if (!code || !client_id || !client_secret || !redirect_uri) {
             throw apiError.badRequest('Missing parameters');
         }
 
-        // validate client
         const [client] = await db
             .select()
             .from(applicationsTable)
@@ -202,25 +223,17 @@ export const tokenService = async ({
             throw apiError.unauthorized('Invalid client');
         }
 
-        // auth request
-
         await db.insert(authLogsTable).values({
             clientId: client_id,
-            action:
-                grant_type === 'authorization_code'
-                    ? 'CODE_EXCHANGE'
-                    : 'REFRESH',
+            action: 'CODE_EXCHANGE',
             status: 'SUCCESS',
             metadata: {},
         });
 
-        const validsecret = client_secret === client.clientSecret;
-
-        if (!validsecret) {
+        if (client_secret !== client.clientSecret) {
             throw apiError.unauthorized('Invalid client_secret');
         }
 
-        // get auth code
         const [stored] = await db
             .select()
             .from(authCodesTable)
@@ -240,7 +253,6 @@ export const tokenService = async ({
             throw apiError.badRequest('Code expired');
         }
 
-        // get user
         const [user] = await db
             .select()
             .from(usersTable)
@@ -249,21 +261,16 @@ export const tokenService = async ({
 
         if (!user) throw apiError.notFound('User not found');
 
-        // users
-
         await db
             .insert(userApplicationsTable)
             .values({ userId: user.id, clientId: client_id })
             .onConflictDoNothing();
 
-        const ISSUER = `http://localhost:${process.env.PORT}`;
-        const now = Math.floor(Date.now() / 1000);
-
         const payload = {
             iss: ISSUER,
             sub: user.id,
             email: user.email,
-            exp: now + 3600,
+            exp: now + 3600, // 1 hour access window
             firstName: user.firstName,
             lastName: user.lastName,
         };
@@ -271,21 +278,14 @@ export const tokenService = async ({
         const access_token = jwt.sign(payload, PRIVATE_KEY, {
             algorithm: 'RS256',
         });
+        const id_token = jwt.sign({ ...payload }, PRIVATE_KEY, {
+            algorithm: 'RS256',
+        });
 
-        const id_token = jwt.sign(
-            {
-                ...payload,
-            },
-            PRIVATE_KEY,
-            { algorithm: 'RS256' },
-        );
-
-        // delete code (single use)
         await db.delete(authCodesTable).where(eq(authCodesTable.code, code));
 
         const { token, hashedToken } = await generateToken();
 
-        // store in DB
         await db
             .update(usersTable)
             .set({ refreshToken: hashedToken })
@@ -305,30 +305,15 @@ export const tokenService = async ({
 
         const hashToken = await generateHashPassword(refresh_token);
 
-        const [stored] = await db
-            .select()
-            .from(refreshTokensTable)
-            .where(eq(refreshTokensTable.token, hashToken))
-            .limit(1);
-
-        if (!stored) {
-            throw apiError.unauthorized('Invalid refresh token');
-        }
-
-        if (new Date() > stored.expiresAt) {
-            throw apiError.unauthorized('Expired refresh token');
-        }
-
         const [user] = await db
             .select()
             .from(usersTable)
-            .where(eq(usersTable.id, stored.userId))
+            .where(eq(usersTable.refreshToken, hashToken))
             .limit(1);
 
-        if (!user) throw apiError.notFound('User not found');
-
-        const ISSUER = `http://localhost:${process.env.PORT}`;
-        const now = Math.floor(Date.now() / 1000);
+        if (!user) {
+            throw apiError.unauthorized('Invalid or expired refresh token');
+        }
 
         const access_token = jwt.sign(
             {
