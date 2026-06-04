@@ -14,14 +14,16 @@ import apiResponse from '../../common/utils/apiResponse.js';
 import apiError from '../../common/utils/apiError.js';
 import type { CookieOptions } from 'express';
 
+const isProduction = process.env.NODE_ENV === 'production';
+
+const cookieOptions: CookieOptions = {
+    httpOnly: true,
+    secure: isProduction,
+    sameSite: isProduction ? 'none' : 'lax',
+};
+
 const signup = async (req: Request, res: Response) => {
     const { user, accessToken } = await signupService(req.body);
-
-    const cookieOptions: CookieOptions = {
-        httpOnly: true,
-        secure: process.env.NODE_ENV === 'production',
-        sameSite: 'strict',
-    };
 
     res.cookie('refreshToken', user.refreshToken, cookieOptions);
 
@@ -33,12 +35,6 @@ const signup = async (req: Request, res: Response) => {
 
 const signin = async (req: Request, res: Response) => {
     const { user, accessToken } = await signinService(req.body);
-
-    const cookieOptions: CookieOptions = {
-        httpOnly: true,
-        secure: process.env.NODE_ENV === 'production',
-        sameSite: 'strict',
-    };
 
     res.cookie('refreshToken', user.refreshToken, cookieOptions);
 
@@ -78,12 +74,6 @@ const refresh = async (req: Request, res: Response) => {
     if (!user) {
         throw apiError.notFound('User not found');
     }
-
-    const cookieOptions: CookieOptions = {
-        httpOnly: true,
-        secure: process.env.NODE_ENV === 'production',
-        sameSite: 'strict',
-    };
 
     res.cookie('refreshToken', user.refreshToken, cookieOptions);
 
@@ -139,18 +129,16 @@ const resetPassword = async (req: Request, res: Response) => {
 
 const verifyEmail = async (req: Request, res: Response) => {
     try {
-    const token = req.query.token as string;
+        const token = req.query.token as string;
 
-    if (!token || Array.isArray(token)) {
-        throw apiError.unauthorized('Invalid token');
-    }
+        if (!token || Array.isArray(token)) {
+            throw apiError.unauthorized('Invalid token');
+        }
 
         await verifyEmailService(token);
         return res.redirect(`${process.env.FRONTEND_URL}?verified=true`);
     } catch (error) {
-        return res.redirect(
-            `${process.env.FRONTEND_URL}?verified=false`,
-        );
+        return res.redirect(`${process.env.FRONTEND_URL}?verified=false`);
     }
 };
 

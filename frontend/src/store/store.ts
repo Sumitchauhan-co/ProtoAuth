@@ -42,7 +42,6 @@ const authStore: StateCreator<
 
     signin: (userData: UserData) => {
         const user = userData?.data.user;
-        console.log(user);
 
         set(
             {

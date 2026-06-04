@@ -12,8 +12,7 @@ import LoadingAnimation from './shared/LoadingAnimation';
 function App() {
     const getUser = useAuthStore((state) => state.getUser);
 
-    // Add a loading state to prevent the routing engine from racing ahead
-    const [isHydrating, setIsHydrating] = useState(true);
+    const [loading, setLoading] = useState(true);
     const [searchParams, setSearchParams] = useSearchParams();
 
     // 1. Handle Verification Alerts
@@ -42,14 +41,14 @@ function App() {
             } catch (error) {
                 console.error('No active user session found on mount:', error);
             } finally {
-                setIsHydrating(false);
+                setLoading(false);
             }
         }
 
         initializeSession();
     }, [getUser]);
 
-    if (isHydrating) {
+    if (loading) {
         return <LoadingAnimation />;
     }
 
