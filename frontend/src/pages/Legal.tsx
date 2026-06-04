@@ -12,10 +12,10 @@ interface LegalBlockProps {
 
 const LegalBlock = ({ title, lastUpdated, icon, content }: LegalBlockProps) => {
     return (
-        <article className="relative w-full rounded-xl p-6 shadow-xs dark:bg-neutral-900/40 backdrop-blur-md">
+        <article className="relative w-full rounded-xl p-6 shadow-xs backdrop-blur-md">
             {/* Header Block */}
             <div className="flex items-center gap-4 border-b pb-4 mb-5">
-                <div className="p-2.5 rounded-xl border bg-neutral-50 text-neutral-800 dark:bg-neutral-950 dark:border-neutral-800 dark:text-neutral-200 shrink-0">
+                <div className="p-2.5 rounded-xl border text-neutral-800 dark:border-neutral-800 dark:text-neutral-200 shrink-0">
                     {icon}
                 </div>
                 <div className="space-y-0.5">

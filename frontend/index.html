@@ -1,13 +1,61 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en" class="dark">
-  <head>
-    <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>ProtoAuth</title>
-  </head>
-  <body>
-    <div id="root"></div>
-    <script type="module" src="/src/main.tsx"></script>
-  </body>
+
+<head>
+  <meta charset="UTF-8" />
+
+  <meta http-equiv="Content-Security-Policy"
+    content="default-src 'self'; script-src 'self' 'identity'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; connect-src 'self'; frame-ancestors 'none'; object-src 'none';" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+  <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+  <link rel="manifest" href="/site.webmanifest" />
+
+  <link rel="modulepreload" href="/src/main.tsx" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <title>ProtoAuth | Secure Identity Provider</title>
+  <meta name="description"
+    content="ProtoAuth is a highly secure, modern OpenID Connect (OIDC) and OAuth 2.0 identity provider designed for seamless application authentication." />
+  <meta name="keywords" content="OIDC, OpenID Connect, OAuth2, Identity Provider, Auth, MFA, SSO, Secure Login" />
+  <meta name="robots" content="index, follow" />
+
+  <meta property="og:type" content="website" />
+  <meta property="og:title" content="ProtoAuth | Secure Identity Provider" />
+  <meta property="og:description" content="Modern, developer-friendly OpenID Connect identity management platform." />
+  <meta property="og:image" content="/og-image.png" />
+  <meta property="og:site_name" content="ProtoAuth" />
+
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="ProtoAuth | Secure Identity Provider" />
+  <meta name="twitter:description" content="Modern, developer-friendly OpenID Connect identity management platform." />
+  <meta name="twitter:image" content="/og-image.png" />
+</head>
+
+<body class="bg-background text-foreground antialiased min-h-screen selection:bg-primary/10">
+
+  <a href="#root"
+    class="sr-only focus:not-sr-only focus:absolute focus:top-4 focus:left-4 bg-primary text-primary-foreground px-4 py-2 rounded-md z-50 transition-all">
+    Skip to content
+  </a>
+
+  <div id="root" role="main" aria-label="ProtoAuth Application Domain"></div>
+
+  <script type="module" src="/src/main.tsx"></script>
+
+  <noscript>
+    <div
+      style="font-family: sans-serif; padding: 2rem; text-align: center; background-color: #09090b; color: #fafafa; position: fixed; inset: 0; z-index: 9999; display: flex; flex-direction: column; align-items: center; justify-content: center;">
+      <h2 style="font-size: 1.5rem; font-weight: 600; margin-bottom: 1rem;">JavaScript Required</h2>
+      <p style="color: #a1a1aa; max-w: 400px; line-height: 1.5;">
+        ProtoAuth handles cryptographically secure identity flows which require JavaScript execution. Please enable
+        JavaScript in your browser to log in or manage your credentials.
+      </p>
+    </div>
+  </noscript>
+
+</body>
+
 </html>

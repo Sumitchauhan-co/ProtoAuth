@@ -5,6 +5,7 @@ import LoadingAnimation from '@/shared/LoadingAnimation';
 import LegalSection from '@/pages/Legal';
 import ForgotPasswordPage from '@/components/auth/ForgotPassword';
 import ResetPasswordPage from '@/components/auth/ResetPassword';
+import NotFound from '@/pages/NotFound';
 
 const Home = lazy(() => import('@/pages/Home'));
 const Signin = lazy(() => import('@/components/auth/Signin'));
@@ -85,6 +86,11 @@ const AppRoute = () => {
                 <Route
                     path="/legal"
                     element={<LegalSection />}
+                />
+
+                <Route
+                    path="*"
+                    element={<NotFound />}
                 />
             </Routes>
         </Suspense>

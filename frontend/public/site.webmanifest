@@ -1,0 +1,17 @@
+{
+    "name": "ProtoAuth",
+    "short_name": "ProtoAuth",
+    "description": "Secure, modern OpenID Connect (OIDC) identity provider for seamless application authentication.",
+    "theme_color": "#000000",
+    "background_color": "#000000",
+    "display": "standalone",
+    "start_url": "/",
+    "scope": "/",
+    "icons": [
+        {
+            "src": "/icon.svg",
+            "sizes": "192x192 512x512",
+            "type": "image/svg+xml"
+        }
+    ]
+}
