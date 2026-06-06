@@ -9,7 +9,10 @@ const Footer = () => {
     const links = [
         { title: 'Docs', href: '/docs' },
         { title: 'Dashboard', href: '/dashboard' },
-        { title: 'Blog', href: '/blog' },
+        {
+            title: 'Blog',
+            href: 'https://oidc.hashnode.dev/understanding-oauth-open-id-connect-oidc',
+        },
         { title: 'Privacy', href: '/legal' },
         { title: 'Terms', href: '/legal' },
         { title: 'Cookies', href: '/legal' },
