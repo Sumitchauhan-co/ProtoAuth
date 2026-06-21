@@ -20,6 +20,8 @@ router.get('/o/authenticate/signout', oidcController.signout);
 
 router.post('/o/token', oidcController.token);
 
+router.post('/o/revoke', oidcController.revoke);
+
 router.get('/o/userinfo', oidcController.userInfo);
 
 export default router;

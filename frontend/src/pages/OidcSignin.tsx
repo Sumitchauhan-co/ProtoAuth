@@ -20,10 +20,8 @@ const OidcSignin = () => {
     const [searchParams] = useSearchParams();
 
     // OIDC Specific Params
-    const clientId = searchParams.get('client_id');
-    const redirectUri = searchParams.get('redirect_uri');
-    console.log(clientId, redirectUri);
-    // const state = searchParams.get('state');
+    const oidcParams = Object.fromEntries(searchParams.entries());
+    const clientId = oidcParams.client_id;
 
     const [appName, setAppName] = useState<string>('');
 
@@ -40,8 +38,7 @@ const OidcSignin = () => {
             try {
                 const res = await api.post('/o/authenticate/signin', {
                     ...data,
-                    client_id: clientId,
-                    redirect_uri: redirectUri,
+                    ...oidcParams,
                 });
 
                 signin(res.data);

@@ -4,6 +4,7 @@ import { PUBLIC_KEY } from './utils/cert.js';
 import apiResponse from '../../common/utils/apiResponse.js';
 import apiError from '../../common/utils/apiError.js';
 import {
+    revocationService,
     signinService,
     signoutService,
     signupService,
@@ -23,9 +24,24 @@ const serviceDiscovery = (req: Request, res: Response) => {
     return res.json({
         issuer: ISSUER,
         authorization_endpoint: `${ISSUER}/o/authenticate`,
-        userinfo_endpoint: `${ISSUER}/o/userinfo`,
-        jwks_uri: `${ISSUER}/.well-known/jwks.json`,
         token_endpoint: `${ISSUER}/o/token`,
+        userinfo_endpoint: `${ISSUER}/o/userinfo`,
+        revocation_endpoint: `${ISSUER}/o/revoke`,
+        jwks_uri: `${ISSUER}/.well-known/jwks.json`,
+        scopes_supported: ['openid', 'profile', 'email'],
+        response_types_supported: ['code'],
+        id_token_signing_alg_values_supported: ['RS256'],
+        claims_supported: [
+            'iss',
+            'sub',
+            'aud',
+            'exp',
+            'iat',
+            'name',
+            'given_name',
+            'family_name',
+            'email',
+        ],
     });
 };
 
@@ -45,16 +61,30 @@ const authenticate = async (req: Request, res: Response) => {
 };
 
 const signin = async (req: Request, res: Response) => {
-    const { client_id, redirect_uri, state } = req.body;
+    const {
+        response_type,
+        client_id,
+        redirect_uri,
+        state,
+        scope,
+        nonce,
+        code_challenge,
+        code_challenge_method,
+    } = req.body;
 
-    if (!client_id || !redirect_uri) {
+    if (!response_type || !client_id || !redirect_uri) {
         throw apiError.badRequest('Invalid or missing OIDC parameters');
     }
 
     const redirectUrl = await signinService(req.body, {
+        response_type,
         client_id,
         redirect_uri,
         state,
+        scope,
+        nonce,
+        code_challenge,
+        code_challenge_method,
     });
 
     if (!redirectUrl) {
@@ -67,17 +97,35 @@ const signin = async (req: Request, res: Response) => {
 };
 
 const signup = async (req: Request, res: Response) => {
-    const { client_id, redirect_uri, state } = req.body;
+    const {
+        response_type,
+        client_id,
+        redirect_uri,
+        state,
+        scope,
+        nonce,
+        code_challenge,
+        code_challenge_method,
+    } = req.body;
 
-    if (!client_id || !redirect_uri) {
+    if (!response_type || !client_id || !redirect_uri) {
         throw apiError.badRequest('Invalid or missing OIDC parameters');
     }
 
     const redirectUrl = await signupService(req.body, {
+        response_type,
         client_id,
         redirect_uri,
         state,
+        scope,
+        nonce,
+        code_challenge,
+        code_challenge_method,
     });
+
+    if (!redirectUrl) {
+        throw apiError.badRequest('Failed to generate redirect URL');
+    }
 
     return apiResponse.created(
         res,
@@ -124,12 +172,29 @@ const token = async (req: Request, res: Response) => {
         throw apiError.notFound('token details missing');
     }
 
-    if (result?.refresh_token) {
-        res.cookie('refreshToken', result.refresh_token, cookieOptions);
-        res.cookie('idToken', result.id_token, cookieOptions);
-    }
+    res.cookie('refreshToken', result.refresh_token, cookieOptions);
+    res.cookie('idToken', result.id_token, cookieOptions);
 
     return apiResponse.ok(res, 'Successfully created token', result);
+};
+
+const revoke = async (req: Request, res: Response) => {
+    const { token, client_id, client_secret } = req.body;
+
+    if (!token) {
+        throw apiError.badRequest('Missing required parameter: token');
+    }
+    if (!client_id) {
+        throw apiError.badRequest('Missing required parameter: client_id');
+    }
+
+    await revocationService({
+        token,
+        client_id,
+        client_secret,
+    });
+
+    return apiResponse.ok(res, 'Successfully revoked token');
 };
 
 const userInfo = async (req: Request, res: Response) => {
@@ -156,5 +221,6 @@ export default {
     signup,
     signout,
     token,
+    revoke,
     userInfo,
 };

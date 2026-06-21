@@ -23,8 +23,8 @@ const OidcSignup = () => {
     const [searchParams] = useSearchParams();
 
     // OIDC Specific Params
-    const clientId = searchParams.get('client_id');
-    const redirectUri = searchParams.get('redirect_uri');
+    const oidcParams = Object.fromEntries(searchParams.entries());
+    const clientId = oidcParams.client_id;
 
     const prefilledEmail =
         searchParams.get('email') || location.state?.email || '';
@@ -49,8 +49,7 @@ const OidcSignup = () => {
             try {
                 const res = await api.post('/o/authenticate/signup', {
                     ...data,
-                    client_id: clientId,
-                    redirect_uri: redirectUri,
+                    ...oidcParams,
                 });
 
                 signin(res.data);

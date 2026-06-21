@@ -8,7 +8,7 @@ import {
     pgEnum,
     text,
     jsonb,
-    uniqueIndex
+    uniqueIndex,
 } from 'drizzle-orm/pg-core';
 
 export const userRoleEnum = pgEnum('user_role', ['user', 'admin']);
@@ -82,6 +82,16 @@ export const authCodesTable = pgTable('auth_codes', {
     clientId: varchar('client_id', { length: 255 }).notNull(),
 
     redirectUri: text('redirect_uri').notNull(),
+
+    scope: text('scope').default('openid').notNull(),
+
+    nonce: varchar('nonce', { length: 255 }),
+
+    codeChallenge: text('code_challenge'),
+
+    codeChallengeMethod: varchar('code_challenge_method', {
+        length: 50,
+    }).default('plain'),
 
     expiresAt: timestamp('expires_at', { withTimezone: true }).notNull(),
 

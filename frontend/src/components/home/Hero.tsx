@@ -1,6 +1,6 @@
-import { cn } from '@/lib/utils';
-import { useNavigate } from 'react-router-dom';
-import { Button } from '../ui/button';
+import { cn } from "@/lib/utils";
+import { useNavigate } from "react-router-dom";
+import { Button } from "../ui/button";
 
 const Hero = () => {
     const navigate = useNavigate();
@@ -9,10 +9,10 @@ const Hero = () => {
         <section className="relative flex h-full w-full items-center justify-center bg-white dark:bg-black overflow-hidden selection:bg-neutral-200 dark:selection:bg-neutral-800">
             <div
                 className={cn(
-                    'absolute inset-0',
-                    '[background-size:20px_20px]',
-                    '[background-image:radial-gradient(#d4d4d4_1px,transparent_1px)]',
-                    'dark:[background-image:radial-gradient(#404040_1px,transparent_1px)]',
+                    "absolute inset-0",
+                    "[background-size:20px_20px]",
+                    "[background-image:radial-gradient(#d4d4d4_1px,transparent_1px)]",
+                    "dark:[background-image:radial-gradient(#404040_1px,transparent_1px)]",
                 )}
             />
             <div className="pointer-events-none absolute inset-0 flex items-center justify-center bg-white [mask-image:radial-gradient(ellipse_at_center,transparent_20%,black)] dark:bg-black"></div>
@@ -38,15 +38,17 @@ const Hero = () => {
 
                 <div className="mt-14 flex flex-col items-center gap-5 sm:flex-row">
                     <Button
-                        onClick={() => navigate('/dashboard')}
-                        variant={'btn'}
+                        onClick={() => navigate("/dashboard")}
+                        variant={"btn"}
                         className="h-12 px-10"
                     >
                         Connect Auth
                     </Button>
                     <Button
-                        onClick={() => navigate('/docs')}
-                        variant={'btn2'}
+                        onClick={() =>
+                            navigate(`${import.meta.env.VITE_DOCS_URL}`)
+                        }
+                        variant={"btn2"}
                         className="h-12 px-10"
                     >
                         View Specs
