@@ -1,23 +1,24 @@
-import { lazy, Suspense } from 'react';
-import { Route, Routes } from 'react-router-dom';
-import AppLayout from '@/layouts/AppLayout';
-import LoadingAnimation from '@/shared/LoadingAnimation';
-import LegalSection from '@/pages/Legal';
-import ForgotPasswordPage from '@/components/auth/ForgotPassword';
-import ResetPasswordPage from '@/components/auth/ResetPassword';
-import NotFound from '@/pages/NotFound';
+import { lazy, Suspense } from "react";
+import { Route, Routes } from "react-router-dom";
+import AppLayout from "@/layouts/AppLayout";
+import LoadingAnimation from "@/shared/LoadingAnimation";
+import LegalSection from "@/pages/Legal";
+import ForgotPasswordPage from "@/components/auth/ForgotPassword";
+import ResetPasswordPage from "@/components/auth/ResetPassword";
+import NotFound from "@/pages/NotFound";
 
-const Home = lazy(() => import('@/pages/Home'));
-const Signin = lazy(() => import('@/components/auth/Signin'));
-const Signup = lazy(() => import('@/components/auth/Signup'));
-const OidcSignin = lazy(() => import('@/pages/OidcSignin'));
-const OidcSignup = lazy(() => import('@/pages/OidcSignup'));
-const Dashboard = lazy(() => import('@/pages/Dashboard'));
+const Home = lazy(() => import("@/pages/Home"));
+const Signin = lazy(() => import("@/components/auth/Signin"));
+const Signup = lazy(() => import("@/components/auth/Signup"));
+const Docs = lazy(() => import("@/pages/Docs"));
+const OidcSignin = lazy(() => import("@/pages/OidcSignin"));
+const OidcSignup = lazy(() => import("@/pages/OidcSignup"));
+const Dashboard = lazy(() => import("@/pages/Dashboard"));
 const DashboardContent = lazy(
-    () => import('@/components/dashboard/DashboardContent'),
+    () => import("@/components/dashboard/DashboardContent"),
 );
-const Applications = lazy(() => import('@/components/dashboard/Applications'));
-const Clients = lazy(() => import('@/components/dashboard/Client'));
+const Applications = lazy(() => import("@/components/dashboard/Applications"));
+const Clients = lazy(() => import("@/components/dashboard/Client"));
 
 const AppRoute = () => {
     return (
@@ -76,6 +77,12 @@ const AppRoute = () => {
                         element={<Clients />}
                     />
                 </Route>
+
+                {/* Documentation */}
+                <Route
+                    path="/docs"
+                    element={<Docs />}
+                />
 
                 {/*  Legal section */}
                 <Route

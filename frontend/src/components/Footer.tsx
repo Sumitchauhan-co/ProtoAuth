@@ -2,31 +2,31 @@ import {
     IconBrandX,
     IconBrandLinkedin,
     IconBrandGithub,
-} from '@tabler/icons-react';
-import Icons from '@/utils/Icons';
+} from "@tabler/icons-react";
+import Icons from "@/utils/Icons";
 
 const Footer = () => {
     const links = [
-        { title: 'Docs', href: `${import.meta.env.VITE_DOCS_URL}` },
-        { title: 'Dashboard', href: '/dashboard' },
+        { title: "Docs", href: "/docs" },
+        { title: "Dashboard", href: "/dashboard" },
         {
-            title: 'Blog',
-            href: 'https://oidc.hashnode.dev/understanding-oauth-open-id-connect-oidc',
+            title: "Blog",
+            href: "https://oidc.hashnode.dev/understanding-oauth-open-id-connect-oidc",
         },
-        { title: 'Privacy', href: '/legal' },
-        { title: 'Terms', href: '/legal' },
-        { title: 'Cookies', href: '/legal' },
+        { title: "Privacy", href: "/legal" },
+        { title: "Terms", href: "/legal" },
+        { title: "Cookies", href: "/legal" },
     ];
 
     const socialLinks = [
-        { icon: <IconBrandX size={20} />, href: 'https://x.com/SUMITCH433' },
+        { icon: <IconBrandX size={20} />, href: "https://x.com/SUMITCH433" },
         {
             icon: <IconBrandLinkedin size={20} />,
-            href: 'https://www.linkedin.com/in/sumit-chauhan-10679a384?utm_source=share&utm_campaign=share_via&utm_content=profile&utm_medium=android_app',
+            href: "https://www.linkedin.com/in/sumit-chauhan-10679a384?utm_source=share&utm_campaign=share_via&utm_content=profile&utm_medium=android_app",
         },
         {
             icon: <IconBrandGithub size={20} />,
-            href: 'https://github.com/Sumitchauhan-co',
+            href: "https://github.com/Sumitchauhan-co",
         },
     ];
 

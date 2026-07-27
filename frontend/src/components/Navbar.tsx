@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState } from "react";
 import {
     Navbar as AceternityNavbar,
     NavBody,
@@ -8,11 +8,11 @@ import {
     MobileNavHeader,
     MobileNavToggle,
     MobileNavMenu,
-} from '@/components/ui/resizable-navbar';
-import { ModeToggle } from '../theme/ModeToggle';
-import icons from '@/utils/Icons';
-import useAuthStore from '@/store/store';
-import { Link } from 'react-router-dom';
+} from "@/components/ui/resizable-navbar";
+import { ModeToggle } from "../theme/ModeToggle";
+import icons from "@/utils/Icons";
+import useAuthStore from "@/store/store";
+import { Link } from "react-router-dom";
 
 const Navbar = () => {
     const user = useAuthStore((state) => state.user);
@@ -20,8 +20,8 @@ const Navbar = () => {
     const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
     const navLinks = [
-        { name: 'Docs', link: `${import.meta.env.VITE_DOCS_URL}` },
-        { name: 'Dashboard', link: '/dashboard' },
+        { name: "Docs", link: `/docs` },
+        { name: "Dashboard", link: "/dashboard" },
     ];
 
     return (
@@ -31,7 +31,7 @@ const Navbar = () => {
                 {/* Left side */}
                 <div className="flex items-center gap-10">
                     <Link
-                        to={'/'}
+                        to={"/"}
                         className="flex items-center cursor-pointer"
                     >
                         <icons.Logo className="dark:text-white h-7 w-7" />

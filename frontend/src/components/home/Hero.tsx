@@ -45,9 +45,7 @@ const Hero = () => {
                         Connect Auth
                     </Button>
                     <Button
-                        onClick={() =>
-                            navigate(`${import.meta.env.VITE_DOCS_URL}`)
-                        }
+                        onClick={() => navigate(`/docs`)}
                         variant={"btn2"}
                         className="h-12 px-10"
                     >
