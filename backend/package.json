@@ -10,7 +10,7 @@
         "db:migrate": "drizzle-kit migrate",
         "prestart": "npm run db:migrate",
         "start": "node dist/index.js",
-        "dev": "tsc-watch --onSuccess \"node dist/index\"",
+        "dev": "tsc-watch --onSuccess \"node dist/index.js\"",
         "studio": "drizzle-kit studio"
     },
     "keywords": [],
@@ -36,7 +36,7 @@
         "@types/cors": "^2.8.19",
         "@types/express": "^5.0.6",
         "@types/jsonwebtoken": "^9.0.10",
-        "@types/node": "^25.6.0",
+        "@types/node": "^25.9.5",
         "@types/node-jose": "^1.1.13",
         "@types/nodemailer": "^8.0.0",
         "@types/pg": "^8.20.0",
