@@ -1,15 +1,21 @@
-import express from "express";
-import adminController from "./admin.controller.js";
-import { authenticate } from "../auth/auth.middleware.js";
+import express from 'express';
+import adminController from './admin.controller.js';
+import { authenticate } from '../auth/auth.middleware.js';
 
-const router = express.Router()
+const router = express.Router();
 
-router.post('/application', authenticate, adminController.application)
+router.post('/application', authenticate, adminController.application);
 
-router.get('/application/:client_id', adminController.applicationData)
+router.delete(
+	'/application/:id',
+	authenticate,
+	adminController.deleteApplication,
+);
 
-router.get('/application', authenticate, adminController.getApplication)
+router.get('/application/:client_id', adminController.applicationData);
 
-router.get('/stat', authenticate, adminController.getStat)
+router.get('/application', authenticate, adminController.getApplication);
 
-export default router
+router.get('/stat', authenticate, adminController.getStat);
+
+export default router;
