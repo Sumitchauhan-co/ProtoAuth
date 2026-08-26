@@ -69,12 +69,7 @@ export const getApplicationService = async (userId: string) => {
 	const data = await db
 		.select()
 		.from(applicationsTable)
-		.where(eq(applicationsTable.ownerId, userId))
-		.limit(1);
-
-	if (!data) {
-		throw apiError.notFound('Application not found');
-	}
+		.where(eq(applicationsTable.ownerId, userId));
 
 	return data;
 };

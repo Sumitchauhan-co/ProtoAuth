@@ -224,6 +224,7 @@ const Applications = () => {
 									Cancel
 								</Button>
 								<Button
+									onSubmit={handleSubmit(onSubmit)}
 									type="submit"
 									disabled={isSubmitting}
 									className="bg-black dark:bg-white text-white dark:text-black font-semibold px-8"

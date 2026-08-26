@@ -108,6 +108,7 @@ const ClientsPage = () => {
 		const applicationPromise = async () => {
 			try {
 				const res = await api.get('/api/admin/application');
+				console.log(res);
 				setApplication(res.data.data);
 				return 'Clients updated';
 			} catch (error) {
